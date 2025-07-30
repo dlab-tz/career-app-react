@@ -1,10 +1,13 @@
 import React from 'react';
+import UserForm from './components/UserForm';
 
 function App() {
   return (
-    <h2>Career App</h2>
+    <div>
+      <h1 style={{ textAlign: 'center' }}>Career Data Collection App</h1>
+      <UserForm />
+    </div>
   );
 }
 
 export default App;
-
