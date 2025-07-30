@@ -21,7 +21,7 @@ const UserForm = () => {
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto' }}>
+    <div style={{ maxWidth: '700px', margin: 'auto' }}>
       <h2>User Profile Form</h2>
       <form onSubmit={handleSubmit}>
         {/* Name field - others will add their fields below this */}
