@@ -2,9 +2,7 @@ import React from 'react';
 
 function App() {
   return (
-    <div>
-      {/* Career App UI will go here */}
-    </div>
+    <h2>Career App</h2>
   );
 }
 
