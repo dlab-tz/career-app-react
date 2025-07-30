@@ -1,11 +1,10 @@
-import React from 'react';
-import UserForm from './components/UserForm';
+import React from "react";
+import ProfessionalField from "./components/ProfessionalField";
 
 function App() {
   return (
-    <div>
-      <h1 style={{ textAlign: 'center' }}>Career Data Collection App</h1>
-      <UserForm />
+    <div className="App">
+      <ProfessionalField />
     </div>
   );
 }
