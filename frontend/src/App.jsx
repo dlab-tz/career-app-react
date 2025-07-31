@@ -1,9 +1,11 @@
-import React from "react";
-import ProfessionalField from "./components/ProfessionalField";
+import React from 'react';
+import UserSample from './components/UserSample';
+import ProfessionalField from './components/ProfessionalField';
 
 function App() {
   return (
-    <div className="App">
+    <div>
+      <UserSample />
       <ProfessionalField />
     </div>
   );
