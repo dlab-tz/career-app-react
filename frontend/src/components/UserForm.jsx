@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import {TextField} from '@mui/material';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
-import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -47,27 +43,22 @@ const UserForm = () => {
             onChange={handleChange}
             required
           />
-          <TextField
-          label= "email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          variant="outlined"
-          fullWidth
-          />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date of Birth"
-              value={formData.DateOfBirth}
-              onChange={(newValue) => {
-                setFormData(prev => ({ ...prev, DateOfBirth: newValue }));
-              }}
-              renderInput={(params) => (
-                <TextField {...params} fullWidth margin="normal" variant="outlined" />
-              )}
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email"
+            fullWidth
             />
-          </LocalizationProvider>
+            <input
+            type="date"
+            name="DateOfBirth"
+            value={formData.DateOfBirth}  
+            onChange={handleChange}
+            required
+          />
+  
         </div>
 
         {/* Additional fields can be added here */}
