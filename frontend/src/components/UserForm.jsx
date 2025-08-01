@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { TextField } from '@mui/material';
-import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import { TextField, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
@@ -9,6 +9,7 @@ const UserForm = () => {
     name: '',
     email: '',
     DateOfBirth: null,
+    ProfessionalField: '',
   });
 
   const handleChange = (e) => {
@@ -23,40 +24,49 @@ const UserForm = () => {
     e.preventDefault();
     if (!formData.email || !formData.DateOfBirth || formData.DateOfBirth > new Date()) {
       alert('Please fill in Email and Date of Birth correctly');
-    } else 
-      if (!formData.email.includes('@') || !formData.email.includes('.')) {
+      return;
+    }
+
+    if (!formData.email.includes('@') || !formData.email.includes('.')) {
       alert('Please enter a valid email address');
-      }
+      return;
+    }
+
     console.log('Submitted:', formData);
-    // TODO: send this formdata to backend via api call
+    // TODO: send this formdata to backend via API call
     // Example: axios.post('/api/user', formData)
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: 'auto' }}>
+    <div style={{ maxWidth: '700px', margin: 'auto', padding: '2rem' }}>
       <h2>User Profile Form</h2>
       <form onSubmit={handleSubmit}>
-        {/* Name field - others will add their fields below this */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="name">Full Name:</label><br />
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          /> <br/>
-          <TextField
-          label="email"
+        {/* Full Name */}
+        <TextField
+          label="Full Name"
+          variant="outlined"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          fullWidth
+          margin="normal"
+          required
+        />
+
+        {/* Email */}
+        <TextField
+          label="Email"
           variant="outlined"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          margin='normal'
-          />
-          <br />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          fullWidth
+          margin="normal"
+          required
+        />
+
+        {/* Date of Birth */}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Date of Birth"
             value={formData.DateOfBirth}
@@ -67,14 +77,34 @@ const UserForm = () => {
               }));
             }}
             renderInput={(params) => (
-            <TextField {...params} fullWidth margin="normal" variant="outlined" />
+              <TextField {...params} fullWidth margin="normal" variant="outlined" required />
             )}
           />
         </LocalizationProvider>
-  
-        </div>
 
-        <button type="submit">Submit</button>
+        {/* Professional Field */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="professional-field-label">Professional Field</InputLabel>
+          <Select
+            labelId="professional-field-label"
+            id="professionalField"
+            name="ProfessionalField"
+            value={formData.ProfessionalField}
+            label="Professional Field"
+            onChange={handleChange}
+            required
+          >
+            <MenuItem value="Software Engineering">Software Engineering</MenuItem>
+            <MenuItem value="Telecommunication">Telecommunication</MenuItem>
+            <MenuItem value="Data Science">Data Science</MenuItem>
+            <MenuItem value="Electrical Engineering">Electrical Engineering</MenuItem>
+          </Select>
+        </FormControl>
+
+        {/* Submit Button */}
+        <button type="submit" style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}>
+          Submit
+        </button>
       </form>
     </div>
   );

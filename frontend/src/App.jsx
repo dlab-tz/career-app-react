@@ -1,6 +1,6 @@
 import React from "react";
 import UserForm from "./components/UserForm";
-import ProfessionalField from "./components/ProfessionalField";
+
 
 function App() {
   return (
@@ -8,8 +8,7 @@ function App() {
       <h2>User Form Component</h2>
       <UserForm />
 
-      <h2>Professional Field Component</h2>
-      <ProfessionalField />
+     
     </div>
   );
 }
