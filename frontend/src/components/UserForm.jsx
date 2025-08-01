@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
-import { TextField } from '@mui/material';
+import { TextField,select,  InputLabel, FormControl, Autocomplete } from '@mui/material';
 import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+const regions = [
+  'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
+  'Kigoma', 'Kilimanjaro', 'Lindi', 'Manyara', 'Mara', 'Mbeya', 'Morogoro',
+  'Mtwara', 'Mwanza', 'Njombe', 'Pwani', 'Rukwa', 'Ruvuma', 'Shinyanga',
+  'Simiyu', 'Singida', 'Tabora', 'Tanga'
+];
+
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +19,7 @@ const UserForm = () => {
     email: '',
     DateOfBirth: null,
   });
+  const [inputValue, setInputValue] = useState ('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,6 +81,20 @@ const UserForm = () => {
             )}
           />
         </LocalizationProvider>
+  <Autocomplete
+  freeSolo
+  options={regions} // 
+  inputValue={inputValue}
+  onInputChange={(e, newInputValue) => {
+    setInputValue(newInputValue);
+  }}
+  renderInput={(params) => (
+    <TextField {...params} label="Region" variant="outlined" fullWidth />
+  )}
+/>
+
+
+          
   
         </div>
 
