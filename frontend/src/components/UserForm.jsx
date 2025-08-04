@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-
-import { TextField,  Button, Box, Typography, Autocomplete } from '@mui/material';
+import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem,
+    Stack, Select, TextField, Typography,  } from '@mui/material';
 import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -20,13 +20,20 @@ const UserForm = () => {
     middleName: '',
     lastName: '',
     email: '',
-    DateOfBirth: null,
+    phone: '',
+    dateOfBirth: null,
+    educationLevel: '',
     region: ''
   });
 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'phone') {
+      // Only allow numbers, max 10 digits
+      if (!/^\d*$/.test(value)) return;
+      if (value.length > 10) return;
+    }
     setFormData(prev => ({
       ...prev,
       [name]: value,
@@ -36,7 +43,7 @@ const UserForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.DateOfBirth || formData.DateOfBirth > new Date()) {
+    if (!formData.email || !formData.dateOfBirth || formData.dateOfBirth > new Date()) {
       alert('Please fill in Email and Date of Birth correctly');
       return;
     }
@@ -45,7 +52,14 @@ const UserForm = () => {
       alert('Please enter a valid email address');
       return;
     }
-
+    if (!formData.phone || !/^\d{10}$/.test(formData.phone)) {
+      alert('Please enter a valid 10-digit phone number');
+      return;
+    }
+    if (!formData.educationLevel) {
+      alert('Please select your education level');
+      return;
+    }
     console.log('Submitted:', formData);
     // TODO: send formData to backend via API call
   };
@@ -54,7 +68,6 @@ const UserForm = () => {
     <Box sx={{ maxWidth: '700px', margin: 'auto', padding: 3 }}>
       <Typography variant="h5" gutterBottom>User Profile Form</Typography>
       <form onSubmit={handleSubmit}>
-
         <TextField
           label="First Name"
           variant="outlined"
@@ -65,7 +78,6 @@ const UserForm = () => {
           fullWidth
           required
         />
-
         <TextField
           label="Middle Name"
           variant="outlined"
@@ -75,7 +87,6 @@ const UserForm = () => {
           margin="normal"
           fullWidth
         />
-
         <TextField
           label="Last Name"
           variant="outlined"
@@ -86,7 +97,6 @@ const UserForm = () => {
           fullWidth
           required
         />
-
         <TextField
           label="Email"
           variant="outlined"
@@ -98,22 +108,37 @@ const UserForm = () => {
           required
           type="email"
         />
+        <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
+            <TextField
+                label="Phone"
+                variant="outlined"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                margin='normal'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                required
+                type="tel"
+                placeholder="10 digits"
+            />
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Date of Birth"
-            value={formData.DateOfBirth}
-            onChange={(newValue) => {
-              setFormData(prev => ({
-                ...prev,
-                DateOfBirth: newValue,
-              }));
-            }}
-            renderInput={(params) => (
-              <TextField {...params} fullWidth margin="normal" required />
-            )}
-          />
-        </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+                label="Date of Birth"
+                value={formData.dateOfBirth}
+                onChange={(newValue) => {
+                setFormData(prev => ({
+                    ...prev,
+                    dateOfBirth: newValue,
+                }));
+                }}
+                renderInput={(params) => (
+                <TextField {...params} fullWidth margin="normal" required />
+                )}
+            />
+            </LocalizationProvider>
+
+        </Stack>
         <Autocomplete
             freeSolo
             options={regions} // 
@@ -126,7 +151,33 @@ const UserForm = () => {
             renderInput={(params) => (
                 <TextField {...params} label="Region"  margin="normal" variant="outlined" fullWidth />
             )}
-            />
+        />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="education-level-label">Education Level</InputLabel>
+            <Select
+              labelId="education-level-label"
+              id="educationLevel"
+              name="educationLevel"
+              value={formData.educationLevel}
+              label="Education Level"
+              onChange={handleChange}
+              required
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              <MenuItem value="Standard 7">Standard 7</MenuItem>
+              <MenuItem value="O Level">O Level</MenuItem>
+              <MenuItem value="A Level">A Level</MenuItem>
+              <MenuItem value="Diploma">Diploma</MenuItem>
+              <MenuItem value="Degree">Degree</MenuItem>
+              <MenuItem value="Masters">Masters</MenuItem>
+              <MenuItem value="PhD">PhD</MenuItem>
+              <MenuItem value="Professor">Professor</MenuItem>
+            </Select>
+          </FormControl>
+
+
+
+        
 
 
         {/* Submit Button - stays at the bottom */}
