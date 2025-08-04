@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { TextField } from '@mui/material';
-import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import { TextField, Button, Box, Typography } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     email: '',
     DateOfBirth: null,
   });
@@ -21,42 +23,71 @@ const UserForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!formData.email || !formData.DateOfBirth || formData.DateOfBirth > new Date()) {
       alert('Please fill in Email and Date of Birth correctly');
-    } else 
-      if (!formData.email.includes('@') || !formData.email.includes('.')) {
+      return;
+    }
+
+    if (!formData.email.includes('@') || !formData.email.includes('.')) {
       alert('Please enter a valid email address');
-      }
+      return;
+    }
+
     console.log('Submitted:', formData);
-    // TODO: send this formdata to backend via api call
-    // Example: axios.post('/api/user', formData)
+    // TODO: send formData to backend via API call
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: 'auto' }}>
-      <h2>User Profile Form</h2>
+    <Box sx={{ maxWidth: '700px', margin: 'auto', padding: 3 }}>
+      <Typography variant="h5" gutterBottom>User Profile Form</Typography>
       <form onSubmit={handleSubmit}>
-        {/* Name field - others will add their fields below this */}
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="name">Full Name:</label><br />
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          /> <br/>
-          <TextField
-          label="email"
+
+        <TextField
+          label="First Name"
+          variant="outlined"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+          required
+        />
+
+        <TextField
+          label="Middle Name"
+          variant="outlined"
+          name="middleName"
+          value={formData.middleName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+        />
+
+        <TextField
+          label="Last Name"
+          variant="outlined"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+          required
+        />
+
+        <TextField
+          label="Email"
           variant="outlined"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          margin='normal'
-          />
-          <br />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          margin="normal"
+          fullWidth
+          required
+          type="email"
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Date of Birth"
             value={formData.DateOfBirth}
@@ -67,16 +98,23 @@ const UserForm = () => {
               }));
             }}
             renderInput={(params) => (
-            <TextField {...params} fullWidth margin="normal" variant="outlined" />
+              <TextField {...params} fullWidth margin="normal" required />
             )}
           />
         </LocalizationProvider>
-  
-        </div>
 
-        <button type="submit">Submit</button>
+        {/* Submit Button - stays at the bottom */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            Submit
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 
