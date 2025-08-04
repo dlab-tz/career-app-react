@@ -23,7 +23,8 @@ const UserForm = () => {
     phone: '',
     dateOfBirth: null,
     educationLevel: '',
-    region: ''
+    region: '',
+    professionalField: '',
   });
 
 
@@ -174,11 +175,24 @@ const UserForm = () => {
               <MenuItem value="Professor">Professor</MenuItem>
             </Select>
           </FormControl>
-
-
-
-        
-
+        {/* Professional Field */}
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="professional-field-label">Professional Field</InputLabel>
+          <Select
+            labelId="professional-field-label"
+            id="professionalField"
+            name="professionalField"
+            value={formData.professionalField}
+            label="Professional Field"
+            onChange={handleChange}
+            required
+          >
+            <MenuItem value="Software Engineering">Software Engineering</MenuItem>
+            <MenuItem value="Telecommunication">Telecommunication</MenuItem>
+            <MenuItem value="Data Science">Data Science</MenuItem>
+            <MenuItem value="Electrical Engineering">Electrical Engineering</MenuItem>
+          </Select>
+        </FormControl>
 
         {/* Submit Button - stays at the bottom */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
