@@ -125,7 +125,7 @@ const UserForm = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
                 label="Date of Birth"
-                value={formData.DateOfBirth}
+                value={formData.dateOfBirth}
                 onChange={(newValue) => {
                 setFormData(prev => ({
                     ...prev,
