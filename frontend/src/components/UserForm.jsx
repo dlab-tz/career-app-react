@@ -129,7 +129,7 @@ const UserForm = () => {
                 onChange={(newValue) => {
                 setFormData(prev => ({
                     ...prev,
-                    DateOfBirth: newValue,
+                    dateOfBirth: newValue,
                 }));
                 }}
                 renderInput={(params) => (
