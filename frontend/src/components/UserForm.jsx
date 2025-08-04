@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
+import { TextField,  Button, Box, Typography, Autocomplete } from '@mui/material';
+import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+
+
+const regions = [
+  'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
+  'Kigoma', 'Kilimanjaro', 'Lindi', 'Manyara', 'Mara', 'Mbeya', 'Morogoro',
+  'Mtwara', 'Mwanza', 'Njombe', 'Pwani', 'Rukwa', 'Ruvuma', 'Shinyanga',
+  'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
+];
+
 
 const UserForm = () => {
   const [formData, setFormData] = useState({
@@ -11,7 +21,9 @@ const UserForm = () => {
     lastName: '',
     email: '',
     DateOfBirth: null,
+    region: ''
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -102,6 +114,20 @@ const UserForm = () => {
             )}
           />
         </LocalizationProvider>
+        <Autocomplete
+            freeSolo
+            options={regions} // 
+            onChange={(event, newValue) => {
+              setFormData(prev => ({
+                ...prev,
+                region: newValue,
+              }));
+            }}
+            renderInput={(params) => (
+                <TextField {...params} label="Region"  margin="normal" variant="outlined" fullWidth />
+            )}
+            />
+
 
         {/* Submit Button - stays at the bottom */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
