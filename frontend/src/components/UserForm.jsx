@@ -1,17 +1,31 @@
 import React, { useState } from 'react';
-import { TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem,
+    Stack, Select, TextField, Typography,  } from '@mui/material';
+import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+
+const regions = [
+  'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
+  'Kigoma', 'Kilimanjaro', 'Lindi', 'Manyara', 'Mara', 'Mbeya', 'Morogoro',
+  'Mtwara', 'Mwanza', 'Njombe', 'Pwani', 'Rukwa', 'Ruvuma', 'Shinyanga',
+  'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
+];
+
+
 const UserForm = () => {
   const [formData, setFormData] = useState({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
     email: '',
     phone: '',
-    DateOfBirth: null,
+    dateOfBirth: null,
     educationLevel: '',
+    region: ''
   });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,10 +42,12 @@ const UserForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.DateOfBirth || formData.DateOfBirth > new Date()) {
+
+    if (!formData.email || !formData.dateOfBirth || formData.dateOfBirth > new Date()) {
       alert('Please fill in Email and Date of Birth correctly');
       return;
     }
+
     if (!formData.email.includes('@') || !formData.email.includes('.')) {
       alert('Please enter a valid email address');
       return;
@@ -45,62 +61,97 @@ const UserForm = () => {
       return;
     }
     console.log('Submitted:', formData);
-    // TODO: send this formdata to backend via api call
-    // Example: axios.post('/api/user', formData)
+    // TODO: send formData to backend via API call
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: 'auto' }}>
-      <h2>User Profile Form</h2>
+    <Box sx={{ maxWidth: '700px', margin: 'auto', padding: 3 }}>
+      <Typography variant="h5" gutterBottom>User Profile Form</Typography>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="name">Full Name:</label><br />
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          /> <br/>
-          <TextField
-            label="Email"
-            variant="outlined"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            margin='normal'
-          />
-          <br />
-          <TextField
-            label="Phone"
-            variant="outlined"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            margin='normal'
-            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
-            required
-            style={{ marginLeft: 10 }}
-            placeholder="10 digits"
-          />
-          <br />
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label="Date of Birth"
-              value={formData.DateOfBirth}
-              onChange={(newValue) => {
-                setFormData(prev => ({
-                  ...prev,
-                  DateOfBirth: newValue,
-                }));
-              }}
-              renderInput={(params) => (
-                <TextField {...params} fullWidth margin="normal" variant="outlined" />
-              )}
+        <TextField
+          label="First Name"
+          variant="outlined"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Middle Name"
+          variant="outlined"
+          name="middleName"
+          value={formData.middleName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+        />
+        <TextField
+          label="Last Name"
+          variant="outlined"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+          required
+        />
+        <TextField
+          label="Email"
+          variant="outlined"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          margin="normal"
+          fullWidth
+          required
+          type="email"
+        />
+        <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
+            <TextField
+                label="Phone"
+                variant="outlined"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                margin='normal'
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                required
+                type="tel"
+                placeholder="10 digits"
             />
-          </LocalizationProvider>
-          <br />
+
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+                label="Date of Birth"
+                value={formData.DateOfBirth}
+                onChange={(newValue) => {
+                setFormData(prev => ({
+                    ...prev,
+                    DateOfBirth: newValue,
+                }));
+                }}
+                renderInput={(params) => (
+                <TextField {...params} fullWidth margin="normal" required />
+                )}
+            />
+            </LocalizationProvider>
+
+        </Stack>
+        <Autocomplete
+            freeSolo
+            options={regions} // 
+            onChange={(event, newValue) => {
+              setFormData(prev => ({
+                ...prev,
+                region: newValue,
+              }));
+            }}
+            renderInput={(params) => (
+                <TextField {...params} label="Region"  margin="normal" variant="outlined" fullWidth />
+            )}
+        />
           <FormControl fullWidth margin="normal">
             <InputLabel id="education-level-label">Education Level</InputLabel>
             <Select
@@ -123,10 +174,24 @@ const UserForm = () => {
               <MenuItem value="Professor">Professor</MenuItem>
             </Select>
           </FormControl>
-        </div>
-        <button type="submit">Submit</button>
+
+
+
+        
+
+
+        {/* Submit Button - stays at the bottom */}
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
+            Submit
+          </Button>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 
