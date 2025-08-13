@@ -1,0 +1,49 @@
+/* General container */
+.user-form-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Title styling */
+.user-form-title {
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  padding: 15px;
+}
+
+/* Form spacing - vertical stack */
+.user-form .form-field {
+  margin-bottom: 0.75rem;
+  display: flex;
+}
+
+/* Row layout for phone & date of birth */
+.user-form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Submit button styling */
+.user-form-submit {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .user-form-row {
+    flex-direction: column;
+  }
+  
+  .user-form-submit {
+    justify-content: center;
+  }
+}
