@@ -60,6 +60,69 @@ app.get('/testdata', (req, res, next) => {
         })
 })
 
+
+//Endpoint for getting all users
+app.get('/api/users', (req, res, next) => {
+    pool.query('SELECT * FROM users')
+        .then(userData => {
+            res.send(userData.rows);
+            console.log('All users fetched successfully');
+        })
+        .catch(err => {
+            console.error('Error fetching all users', err.stack);
+            res.status(500).send('Internal Server Error');
+        });
+})
+
+
+// EDIT user by ID
+app.put('/api/user/:userId', async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const { name, email } = req.body;
+
+  if (!name && !email) {
+    return res.status(400).json({ message: 'Please provide name or email to update' });
+  }
+
+  try {
+    // Build dynamic update query
+    const fields = [];
+    const values = [];
+    let query = 'UPDATE users SET ';
+
+    if (name) {
+      fields.push(`name = $${fields.length + 1}`);
+      values.push(name);
+    }
+    if (email) {
+      fields.push(`email = $${fields.length + 1}`);
+      values.push(email);
+    }
+
+    query += fields.join(', ');
+    query += ` WHERE id = $${fields.length + 1} RETURNING *`;
+    values.push(userId);
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      message: 'User updated successfully',
+      user: result.rows[0]
+    });
+
+  } catch (err) {
+    console.error('Error updating user:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
+
+
 // Require the Routes API  
 // Create a Server and run it on the port 3000
 const server = app.listen(3000, function () {
