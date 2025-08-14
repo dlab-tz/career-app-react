@@ -51,6 +51,18 @@ pool.connect((err, client, release) => {
     })
 })
 
+//get all users in database
+app.get('/api/user', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM "user"');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Error fetching users:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 app.get('/testdata', (req, res, next) => {
     console.log("TEST DATA :");
     pool.query('Select * from test')
@@ -59,6 +71,9 @@ app.get('/testdata', (req, res, next) => {
             res.send(testData.rows);
         })
 })
+
+
+
 
 // Require the Routes API  
 // Create a Server and run it on the port 3000
