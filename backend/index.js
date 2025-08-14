@@ -1,9 +1,8 @@
+// Entry Point of the API Server 
+const express = require('express');
 //load env file
 const dotenv = require('dotenv');
 dotenv.config();
-
-// Entry Point of the API Server 
-const express = require('express');
 
 
 /* Creates an Express application. 
@@ -25,7 +24,7 @@ const pool = new Pool({
     }
 });
 
-
+module.exports = pool;
 /* To handle the HTTP Methods Body Parser 
    is used, Generally used to extract the 
    entire body portion of an incoming 
@@ -36,43 +35,10 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-pool.connect((err, client, release) => {
-    if (err) {
-        return console.error(
-            'Error acquiring client', err.stack)
-    }
-    client.query('SELECT NOW()', (err, result) => {
-        release()
-        if (err) {
-            return console.error(
-                'Error executing query', err.stack)
-        }
-        console.log("Connected to Database !")
-    })
-})
 
-//get all users in database
-app.get('/api/user', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM "user"');
-        res.json(result.rows);
-    } catch (err) {
-        console.error('Error fetching users:', err);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-
-app.get('/testdata', (req, res, next) => {
-    console.log("TEST DATA :");
-    pool.query('Select * from test')
-        .then(testData => {
-            console.log(testData);
-            res.send(testData.rows);
-        })
-})
-
-
+const usersRouter = require('./routes/users.routes');
+//get all users
+app.use('/api/users', usersRouter);
 
 
 // Require the Routes API  
