@@ -60,6 +60,32 @@ app.get('/testdata', (req, res, next) => {
         })
 })
 
+const User = require('./models/user');
+
+app.post('/submit-user', (req, res) => {
+  const user = new User(req.body);
+
+  if (!user.isValid()) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const query = `
+    INSERT INTO users (
+      first_name, middle_name, last_name, email, phone,
+      date_of_birth, region, oversea, education_level,
+      professional_field, country
+    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+    RETURNING *
+  `;
+
+  pool.query(query, user.toSQLValues())
+    .then(result => res.status(201).json(result.rows[0]))
+    .catch(err => {
+      console.error('Error inserting user:', err.stack);
+      res.status(500).json({ error: 'Database error' });
+    });
+});
+
 // Require the Routes API  
 // Create a Server and run it on the port 3000
 const server = app.listen(3000, function () {
