@@ -39,6 +39,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const usersRouter = require('./routes/users.routes');
 //get all users
 app.use('/api/users', usersRouter);
+// Update user
+app.put('/api/users/:userId', usersRouter);
 
 
 // Require the Routes API  
