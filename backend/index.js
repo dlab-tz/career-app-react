@@ -1,53 +1,52 @@
-// Entry Point of the API Server 
+// index.js
 const express = require('express');
-//load env file
 const dotenv = require('dotenv');
 dotenv.config();
-
-
-/* Creates an Express application. 
-The express() function is a top-level 
-function exported by the express module.
-*/
 const app = express();
-const Pool = require('pg').Pool;
+const { Pool } = require('pg');
 
+// PostgreSQL pool
 const pool = new Pool({
     user: process.env.DB_USER,
     host: process.env.DB_HOST,
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
-    dialect: process.env.DB_DIALECT,
     port: process.env.DB_PORT,
     ssl: {
         rejectUnauthorized: false
     }
 });
 
-
-
-
-module.exports = pool;
-/* To handle the HTTP Methods Body Parser 
-   is used, Generally used to extract the 
-   entire body portion of an incoming 
-   request stream and exposes it on req.body 
-*/
+// Body parser
 const bodyParser = require('body-parser');
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-
-
+// Existing users router
 const usersRouter = require('./routes/users.routes');
-//get all users
 app.use('/api/users', usersRouter);
 
+// -------------------------
+// Add this endpoint directly in index.js
+// GET /api/user/:userId
+app.get('/api/user/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error('Error fetching user:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+// -------------------------
 
-// Require the Routes API  
-// Create a Server and run it on the port 3000
+// Start server
 const server = app.listen(3000, function () {
-    let host = server.address().address
-    let port = server.address().port
-    // Starting the Server at the port 3000
-})
+    let host = server.address().address;
+    let port = server.address().port;
+    console.log(`Server is running at http://${host}:${port}`);
+});
