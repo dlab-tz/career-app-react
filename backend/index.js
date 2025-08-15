@@ -25,6 +25,30 @@ const pool = new Pool({
     }
 });
 
+const { Sequelize } = require('sequelize');
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT || 'postgres',
+    port: process.env.DB_PORT,
+    logging: false,
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false
+        }
+    }
+});
+
+// Test Sequelize connection
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log(' Sequelize connected to DB');
+            } catch (error) {
+                console.error(' Sequelize connection error:', error);
+            }
+        })();
+
 
 /* To handle the HTTP Methods Body Parser 
    is used, Generally used to extract the 
@@ -59,32 +83,6 @@ app.get('/testdata', (req, res, next) => {
             res.send(testData.rows);
         })
 })
-
-const User = require('./models/user');
-
-app.post('/submit-user', (req, res) => {
-  const user = new User(req.body);
-
-  if (!user.isValid()) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  const query = `
-    INSERT INTO users (
-      first_name, middle_name, last_name, email, phone,
-      date_of_birth, region, oversea, education_level,
-      professional_field, country
-    ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
-    RETURNING *
-  `;
-
-  pool.query(query, user.toSQLValues())
-    .then(result => res.status(201).json(result.rows[0]))
-    .catch(err => {
-      console.error('Error inserting user:', err.stack);
-      res.status(500).json({ error: 'Database error' });
-    });
-});
 
 // Require the Routes API  
 // Create a Server and run it on the port 3000

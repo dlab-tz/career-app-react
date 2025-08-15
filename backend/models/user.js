@@ -1,37 +1,68 @@
-class User {
-  constructor(data) {
-    this.firstName = String(data.firstName || '');
-    this.middleName = String(data.middleName || '');
-    this.lastName = String(data.lastName || '');
-    this.email = String(data.email || '');
-    this.phone = String(data.phone || '');
-    this.dateOfBirth = data.dateOfBirth ? new Date(data.dateOfBirth) : null;
-    this.region = String(data.region || '');
-    this.oversea = data.oversea === 'yes';
-    this.educationLevel = String(data.educationLevel || '');
-    this.professionalField = String(data.professionalField || '');
-    this.country = String(data.country || '');
-  }
+// models/User.js
+const { DataTypes, Model } = require('sequelize');
 
-  isValid() {
-    return this.firstName && this.lastName && this.email;
-  }
+class User extends Model {}
 
-  toSQLValues() {
-    return [
-      this.firstName,
-      this.middleName,
-      this.lastName,
-      this.email,
-      this.phone,
-      this.dateOfBirth,
-      this.region,
-      this.oversea,
-      this.educationLevel,
-      this.professionalField,
-      this.country
-    ];
-  }
-}
+const defineUserModel = (sequelize) => {
+  User.init({
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: { len: [2, 50] },
+    },
+    middleName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: { len: [2, 50] },
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: { isEmail: true },
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: { is: /^[\d+\-()\s]{7,20}$/i },
+    },
+    dateOfBirth: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    educationLevel: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    region: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    professionalField: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    oversea: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      validate: { isIn: [['yes', 'no', 'unspecified']] },
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  }, {
+    sequelize,
+    modelName: 'User',
+    tableName: 'users',
+    timestamps: true,
+  });
 
-module.exports = User;
+  return User;
+};
+
+module.exports = defineUserModel;
