@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem,
-    Stack, Select, TextField, Typography,  } from '@mui/material';
+import { Autocomplete, Checkbox,Grid, Box, Button, FormControl, InputLabel, MenuItem,
+    Stack, Select, TextField, Typography,
+    FormControlLabel,  } from '@mui/material';
 import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -47,13 +48,11 @@ const UserForm = () => {
     educationLevel: '',
     region: '',
     professionalField: '',
-    locationType: '',
     country: '',
   });
 
- const [locationType, setLocationType] = useState('');
-const [country, setCountry] = useState('');
-const [region, setRegion] = useState('');
+const [isOversea, setIsOversea] = useState(false);
+const notToSelect = ["Tanzania"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -154,6 +153,7 @@ const [region, setRegion] = useState('');
             <DatePicker
                 label="Date of Birth"
                 value={formData.dateOfBirth}
+                disableFuture
                 onChange={(newValue) => {
                 setFormData(prev => ({
                     ...prev,
@@ -167,46 +167,48 @@ const [region, setRegion] = useState('');
             </LocalizationProvider>
 
         </Stack>
-
-  <FormControl fullWidth margin="normal">
-   <InputLabel>Location Type</InputLabel>
-    <Select
-    label='Location Type'
-    name='locationType'
-    value={locationType}
-    onChange={(e) => {
-      setLocationType(e.target.value);
-      setCountry('');
-      setRegion('');
-    }}
-    required
-   >
-    <MenuItem value="in-country">In Country</MenuItem>
-    <MenuItem value="overseas">Overseas</MenuItem>
-  </Select>
-</FormControl>
-
-{locationType === 'overseas' && (
-  <Autocomplete
-    options={countries}
-    value={country}
-    onChange={(_, value) => setCountry(value)}
-    renderInput={(params) => (
-      <TextField {...params} label="Select Country" margin="normal" fullWidth required />
-    )}
-  />
-)}
-
-{locationType === 'in-country' && (
-  <Autocomplete
-    options={regions}
-    value={region}
-    onChange={(_, value) => setRegion(value)}
-    renderInput={(params) => (
-      <TextField {...params} label="Select Region" margin="normal" fullWidth required />
-    )}
-  />
-)}
+                <Autocomplete
+            freeSolo
+            options={regions} // 
+            onChange={(event, newValue) => {
+              setFormData(prev => ({
+                ...prev,
+                region: newValue,
+              }));
+            }}
+            renderInput={(params) => (
+                <TextField {...params} label="Region"  margin="normal" variant="outlined" fullWidth />
+            )}
+        />
+        <Box>
+          <FormControlLabel
+          control={
+            <Checkbox
+            checked={isOversea}
+            onChange={(e) => setIsOversea(e.target.checked)}
+            />
+          }
+          label = "Are you overseas?"
+          />
+        </Box>
+        {
+          isOversea && (
+                <Autocomplete
+           
+            options={countries} // 
+            onChange={(newValue) => {
+              setFormData(prev => ({
+                ...prev,
+                country: newValue,
+              }));
+            }}
+            renderInput={(params) => (
+                <TextField {...params} label="Country"  margin="normal" variant="outlined" fullWidth
+                 />
+            )}
+        />
+          )
+        }
 
 
           <FormControl fullWidth margin="normal">
