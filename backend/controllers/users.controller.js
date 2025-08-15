@@ -1,4 +1,4 @@
-const pool = require("../index");
+const pool = require("../db");
 
 const getAllUsers = async (req, res) => {
     try {
