@@ -13,9 +13,10 @@ const usersRouter = require('./routes/users.routes');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.get('/', (req, res) => {
+  res.send('Backend is up and running ');
+});
 
-
-const usersRouter = require('./routes/users.routes');
 //get all users
 app.use('/api/users', usersRouter);
 
@@ -30,9 +31,13 @@ app.use('/api/users', usersRouter);
 // Require the Routes API  
 // Create a Server and run it on the port 3000
 const server = app.listen(3000, () => {
-    const host = server.address().address;
-    const port = server.address().port;
-    console.log(`🚀 Server running at http://${host}:${port}`);    // Starting the Server at the port 3000
+    const addr = server.address();
+    if (addr) {
+        const formattedHost = addr.address === '::' ? 'localhost' : addr.address;
+        console.log(`🚀 Server running at http://${formattedHost}:${addr.port}`);
+    } else {
+        console.log(`🚀 Server running on port ${PORT}`);
+    }
 });
 } catch (error) {
     console.error('Sequelize connection error:', error);
