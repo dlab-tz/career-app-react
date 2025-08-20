@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
- professional-field
-import { Autocomplete, Box, Button, FormControl, InputLabel, MenuItem, 
-    Stack, Select, TextField, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
-import { Autocomplete, Checkbox,Grid, Box, Button, FormControl, InputLabel, MenuItem,
+import { Autocomplete, Checkbox, Grid, Box, Button, FormControl, InputLabel, MenuItem,
     Stack, Select, TextField, Typography,
     FormControlLabel,  } from '@mui/material';
-import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
- main
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +14,6 @@ const regions = [
   'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
 ];
 
-professional-field
 const professionalFields = [
   "Software Engineering", "Telecommunication", "Data Science", "Electrical Engineering",
   "Civil Engineering", "Mechanical Engineering", "Architecture", "Medicine",
@@ -50,7 +43,6 @@ const countries = [
     "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
     "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe"
   ];
- main
 
 const UserForm = () => {
   const navigate = useNavigate();
@@ -68,12 +60,9 @@ const UserForm = () => {
     country: '',
   });
 
- professional-field
+ const [isOversea, setIsOversea] = useState(false);
+ const notToSelect = ["Tanzania"];
 
-const [isOversea, setIsOversea] = useState(false);
-const notToSelect = ["Tanzania"];
-
- main
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'phone') {
@@ -170,12 +159,6 @@ const notToSelect = ["Tanzania"];
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
- professional-field
-              label="Date of Birth"
-              value={formData.dateOfBirth}
-              onChange={(newValue) => setFormData(prev => ({ ...prev, dateOfBirth: newValue }))}
-              renderInput={(params) => <TextField {...params} fullWidth margin="normal" required />}
-
                 label="Date of Birth"
                 value={formData.dateOfBirth}
                 disableFuture
@@ -188,42 +171,10 @@ const notToSelect = ["Tanzania"];
                 renderInput={(params) => (
                 <TextField {...params} fullWidth margin="normal" required />
                 )}
-main
             />
           </LocalizationProvider>
         </Stack>
-professional-field
-
-        <Autocomplete
-          freeSolo
-          options={regions}
-          onChange={(event, newValue) => setFormData(prev => ({ ...prev, region: newValue }))}
-          renderInput={(params) => <TextField {...params} label="Region" margin="normal" fullWidth />}
-        />
-
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="education-level-label">Education Level</InputLabel>
-          <Select
-            labelId="education-level-label"
-            name="educationLevel"
-            value={formData.educationLevel}
-            onChange={handleChange}
-            required
-          >
-            <MenuItem value=""><em>None</em></MenuItem>
-            <MenuItem value="Standard 7">Standard 7</MenuItem>
-            <MenuItem value="O Level">O Level</MenuItem>
-            <MenuItem value="A Level">A Level</MenuItem>
-            <MenuItem value="Diploma">Diploma</MenuItem>
-            <MenuItem value="Degree">Degree</MenuItem>
-            <MenuItem value="Masters">Masters</MenuItem>
-            <MenuItem value="PhD">PhD</MenuItem>
-            <MenuItem value="Professor">Professor</MenuItem>
-          </Select>
-        </FormControl>
-
-
-                <Autocomplete
+         <Autocomplete
             freeSolo
             options={regions} // 
             onChange={(event, newValue) => {
@@ -290,7 +241,6 @@ professional-field
             </Select>
           </FormControl>
         {/* Professional Field */}
- main
         <FormControl fullWidth margin="normal">
           <InputLabel id="professional-field-label">Professional Field</InputLabel>
           <Select
