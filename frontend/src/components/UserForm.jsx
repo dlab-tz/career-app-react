@@ -13,6 +13,41 @@ const regions = [
   'Mtwara', 'Mwanza', 'Njombe', 'Pwani', 'Rukwa', 'Ruvuma', 'Shinyanga',
   'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
 ];
+  const districtsByRegion = {
+      Arusha: ["Arusha City", "Arusha District", "Karatu", "Longido", "Meru", "Monduli", "Ngorongoro"],
+  "Dar es Salaam": ["Ilala Municipal", "Kinondoni Municipal", "Temeke Municipal", "Kigamboni Municipal", "Ubungo Municipal"],
+  Dodoma: ["Bahi", "Chamwino", "Chemba", "Dodoma Municipal", "Kondoa", "Kongwa", "Mpwapwa"],
+  Geita: ["Geita", "Geita Town", "Bumbuli", "Kyerwa", "Mbogwe", "Nyang'hwale"],
+  Iringa: ["Iringa District", "Iringa Municipal", "Kilolo", "Ludewa", "Mufindi"],
+  Kagera: ["Biharamulo", "Bukoba District", "Bukoba Municipal", "Chato", "Karagwe", "Kyerwa", "Muleba", "Ngara"],
+  Katavi: ["Mpanda District", "Mpanda Municipal", "Mlele"],
+  Kigoma: ["Kasulu District", "Kasulu Town", "Kakonko", "Kibondo", "Kigoma District", "Kigoma Ujiji", "Uvinza"],
+  Kilimanjaro: ["Hai", "Moshi District", "Moshi Municipal", "Mwanga", "Rombo", "Same", "Siha"],
+  Lindi: ["Kilwa", "Lindi District", "Lindi Municipal", "Liwale", "Nachingwea", "Ruangwa"],
+  Manyara: ["Babati District", "Babati Town", "Hanang", "Kiteto", "Mbulu", "Simanjiro"],
+  Mara: ["Bunda District", "Bunda Town", "Butiama", "Musoma District", "Musoma Municipal", "Rorya", "Serengeti", "Tarime District", "Tarime Town"],
+  Mbeya: ["Chunya", "Ileje", "Kyela", "Mbarali", "Mbeya District", "Mbeya City", "Mbozi", "Rungwe"],
+  Morogoro: ["Gairo", "Kilombero", "Kilosa", "Morogoro District", "Morogoro Municipal", "Mvomero", "Ulanga"],
+  Mtwara: ["Masasi District", "Masasi Town", "Mtwara District", "Mtwara Municipal", "Nanyumbu", "Newala District", "Newala Town", "Tandahimba"],
+  Mwanza: ["Geita District", "Ilemela", "Kwimba", "Magu", "Misungwi", "Mwanza District", "Nyamagana", "Sengerema", "Ukerewe"],
+  Njombe: ["Iringa District", "Makambako Town", "Njombe District", "Njombe Town", "Wanging’ombe", "Njombe (others)"],
+  "Pemba North": ["Micheweni", "Wete"],
+  "Pemba South": ["Chake Chake", "Mkoani"],
+  Pwani: ["Bagamoyo", "Kibaha District", "Kibaha Town", "Kisarawe", "Mkuranga", "Rufiji", "Mafia"],
+  Rukwa: ["Kalambo", "Mpanda District", "Mpanda Municipal", "Nkasi", "Sumbawanga District", "Sumbawanga Municipal"],
+  Ruvuma: ["Mbinga", "Mbinga Town", "Namtumbo", "Rufiji", "Songea District", "Songea Municipal", "Tunduru"],
+  Shinyanga: ["Bariadi District", "Bariadi Town", "Bukombe", "Kahama Town", "Maswa", "Meatu", "Shinyanga District", "Shinyanga Municipal"],
+  Simiyu: ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"],
+  Singida: ["Iramba", "Itigi", "Manyoni", "Singida District", "Singida Municipal"],
+  Songwe: ["Ileje", "Mbozi", "Momba", "Songwe District", "Tunduma Town"],
+  Tabora: ["Igunga", "Kaliua", "Nzega", "Tabora District", "Tabora Municipal", "Urambo", "Uyui"],
+  Tanga: ["Bumbuli", "Handeni", "Handeni Town", "Kilindi", "Korogwe District", "Korogwe Town", "Lushoto", "Muheza", "Mkinga", "Pangani", "Tanga District", "Tanga City"],
+  "Zanzibar North": ["Kaskazini A", "Kaskazini B"],
+  "Zanzibar South": ["Kati", "Kusini"],
+  "Zanzibar West": ["Mjini", "Magharibi"]
+};
+
+
 
 const professionalFields = [
   "Software Engineering", "Telecommunication", "Data Science", "Electrical Engineering",
@@ -56,10 +91,12 @@ const UserForm = () => {
     dateOfBirth: null,
     educationLevel: '',
     region: '',
+    district: '', 
     professionalField: '',
     country: '',
   });
 
+ const [districtOptions, setDistrictOptions] = useState([]);
  const [isOversea, setIsOversea] = useState(false);
  const notToSelect = ["Tanzania"];
 
@@ -174,21 +211,31 @@ const UserForm = () => {
             />
           </LocalizationProvider>
         </Stack>
-         <Autocomplete
-            freeSolo
-            options={regions} // 
-            onChange={(event, newValue) => {
-              setFormData(prev => ({
-                ...prev,
-                region: newValue,
-              }));
-            }}
-            renderInput={(params) => (
-                <TextField {...params} label="Region"  margin="normal" variant="outlined" fullWidth />
-            )}
-        />
-        <Box>
-          <FormControlLabel
+        <Autocomplete
+  options={regions}
+  value={formData.region || ''}
+  onChange={(event, newValue) => {
+    setFormData(prev => ({ ...prev, region: newValue, district: '' })); // reset district
+    setDistrictOptions(newValue ? districtsByRegion[newValue] || [] : []);
+  }}
+  renderInput={(params) => (
+    <TextField {...params} label="Region" margin="normal" variant="outlined" fullWidth />
+  )}
+/>
+
+{formData.region && districtOptions.length > 0 && (
+  <Autocomplete
+    options={districtOptions}
+    value={formData.district || ''}
+    onChange={(e, newValue) => setFormData(prev => ({ ...prev, district: newValue }))}
+    renderInput={(params) => (
+      <TextField {...params} label="District" margin="normal" variant="outlined" fullWidth />
+    )}
+  />
+)}
+
+<Box>
+  <FormControlLabel
           control={
             <Checkbox
             checked={isOversea}
