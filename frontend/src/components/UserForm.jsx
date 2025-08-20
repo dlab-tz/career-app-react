@@ -1,17 +1,24 @@
 import React, { useState } from 'react';
-import { Autocomplete, Checkbox,Grid, Box, Button, FormControl, InputLabel, MenuItem,
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Autocomplete, Checkbox, Grid, Box, Button, FormControl, InputLabel, MenuItem,
     Stack, Select, TextField, Typography,
     FormControlLabel,  } from '@mui/material';
-import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import { useNavigate } from 'react-router-dom';
 
 const regions = [
   'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
   'Kigoma', 'Kilimanjaro', 'Lindi', 'Manyara', 'Mara', 'Mbeya', 'Morogoro',
   'Mtwara', 'Mwanza', 'Njombe', 'Pwani', 'Rukwa', 'Ruvuma', 'Shinyanga',
   'Simiyu', 'Singida', 'Songwe', 'Tabora', 'Tanga'
+];
+
+const professionalFields = [
+  "Software Engineering", "Telecommunication", "Data Science", "Electrical Engineering",
+  "Civil Engineering", "Mechanical Engineering", "Architecture", "Medicine",
+  "Nursing", "Pharmacy", "Law", "Accounting", "Finance", "Business Administration",
+  "Marketing", "Education", "Psychology", "Environmental Science", "Agriculture", "Research"
 ];
 
 const countries = [
@@ -38,6 +45,8 @@ const countries = [
   ];
 
 const UserForm = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -51,30 +60,26 @@ const UserForm = () => {
     country: '',
   });
 
-const [isOversea, setIsOversea] = useState(false);
-const notToSelect = ["Tanzania"];
+ const [isOversea, setIsOversea] = useState(false);
+ const notToSelect = ["Tanzania"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name === 'phone') {
-      // Only allow numbers, max 10 digits
-      if (!/^\d*$/.test(value)) return;
-      if (value.length > 10) return;
+      if (!/^\d*$/.test(value)) return; // allow only numbers
+      if (value.length > 10) return; // max 10 digits
     }
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Basic validations
     if (!formData.email || !formData.dateOfBirth || formData.dateOfBirth > new Date()) {
       alert('Please fill in Email and Date of Birth correctly');
       return;
     }
-
     if (!formData.email.includes('@') || !formData.email.includes('.')) {
       alert('Please enter a valid email address');
       return;
@@ -87,69 +92,72 @@ const notToSelect = ["Tanzania"];
       alert('Please select your education level');
       return;
     }
+
     console.log('Submitted:', formData);
-    // TODO: send formData to backend via API call
+    // TODO: send formData to backend API
+  };
+
+  const handleAdminLogin = () => {
+    navigate("/admin-login");
   };
 
   return (
     <Box sx={{ maxWidth: '700px', margin: 'auto', padding: 3 }}>
       <Typography variant="h5" gutterBottom>User Profile Form</Typography>
+
       <form onSubmit={handleSubmit}>
         <TextField
           label="First Name"
-          variant="outlined"
           name="firstName"
           value={formData.firstName}
           onChange={handleChange}
-          margin="normal"
           fullWidth
+          margin="normal"
           required
         />
         <TextField
           label="Middle Name"
-          variant="outlined"
           name="middleName"
           value={formData.middleName}
           onChange={handleChange}
-          margin="normal"
           fullWidth
+          margin="normal"
         />
         <TextField
           label="Last Name"
-          variant="outlined"
           name="lastName"
           value={formData.lastName}
           onChange={handleChange}
-          margin="normal"
           fullWidth
+          margin="normal"
           required
         />
         <TextField
           label="Email"
-          variant="outlined"
           name="email"
+          type="email"
           value={formData.email}
           onChange={handleChange}
-          margin="normal"
           fullWidth
+          margin="normal"
           required
-          type="email"
         />
-        <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
-            <TextField
-                label="Phone"
-                variant="outlined"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                margin='normal'
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
-                required
-                type="tel"
-                placeholder="10 digits"
-            />
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <TextField
+            label="Phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleChange}
+            fullWidth
+            margin="normal"
+            type="tel"
+            inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+            placeholder="10 digits"
+            required
+          />
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
                 label="Date of Birth"
                 value={formData.dateOfBirth}
@@ -164,10 +172,9 @@ const notToSelect = ["Tanzania"];
                 <TextField {...params} fullWidth margin="normal" required />
                 )}
             />
-            </LocalizationProvider>
-
+          </LocalizationProvider>
         </Stack>
-                <Autocomplete
+         <Autocomplete
             freeSolo
             options={regions} // 
             onChange={(event, newValue) => {
@@ -238,30 +245,25 @@ const notToSelect = ["Tanzania"];
           <InputLabel id="professional-field-label">Professional Field</InputLabel>
           <Select
             labelId="professional-field-label"
-            id="professionalField"
             name="professionalField"
             value={formData.professionalField}
-            label="Professional Field"
             onChange={handleChange}
             required
           >
-            <MenuItem value="Software Engineering">Software Engineering</MenuItem>
-            <MenuItem value="Telecommunication">Telecommunication</MenuItem>
-            <MenuItem value="Data Science">Data Science</MenuItem>
-            <MenuItem value="Electrical Engineering">Electrical Engineering</MenuItem>
+            {professionalFields.map(field => (
+              <MenuItem key={field} value={field}>{field}</MenuItem>
+            ))}
           </Select>
         </FormControl>
 
-        {/* Submit Button - stays at the bottom */}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-          >
+        <Stack direction="row" spacing={2} sx={{ mt: 3, justifyContent: "flex-end" }}>
+          <Button type="submit" variant="contained" color="primary">
             Submit
           </Button>
-        </Box>
+          <Button type="button" variant="contained" color="secondary" onClick={handleAdminLogin}>
+            Admin Login
+          </Button>
+        </Stack>
       </form>
     </Box>
   );
