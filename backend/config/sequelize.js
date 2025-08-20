@@ -24,3 +24,4 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
                 console.error(' Sequelize connection error:', error);
             }
         })();
+        module.exports = sequelize;
