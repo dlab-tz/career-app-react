@@ -244,6 +244,7 @@ const UserForm = () => {
         <FormControl fullWidth margin="normal">
           <InputLabel id="professional-field-label">Professional Field</InputLabel>
           <Select
+            label="professional-field-label"
             labelId="professional-field-label"
             name="professionalField"
             value={formData.professionalField}
