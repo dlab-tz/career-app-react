@@ -8,61 +8,58 @@ const AdminLogin = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+    setCredentials(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     const { username, password } = credentials;
 
-    if (!username || !password) {
-      alert("Please enter both username and password");
-      return;
-    }
-
-    // TODO: Replace with real admin authentication API
+    if (!username || !password) { alert("Please enter both username and password"); return; }
     if (username === "admin" && password === "admin123") {
       alert("Admin login successful!");
-      navigate("/"); // Redirect to home/dashboard
-    } else {
-      alert("Invalid credentials");
-    }
+      navigate("/");
+    } else { alert("Invalid credentials"); }
   };
 
   return (
-    <Box sx={{ maxWidth: "400px", margin: "auto", padding: 3, mt: 5 }}>
-      <Typography variant="h5" gutterBottom>
-        Admin Login
-      </Typography>
+    <Box sx={{
+      minHeight:"100vh",
+      display:"flex",
+      justifyContent:"center",
+      alignItems:"center",
+      background:"linear-gradient(135deg, #42a5f5, #ff7043)"
+    }}>
+      <Box sx={{
+        width:400,
+        bgcolor:"white",
+        borderRadius:3,
+        boxShadow:8,
+        p:5,
+        textAlign:"center"
+      }}>
+        <Typography variant="h4" sx={{ color:"#ff7043", fontWeight:"bold", mb:4 }}>
+          Admin Login
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Stack spacing={3}>
+            <TextField label="Username" name="username" value={credentials.username} onChange={handleChange} fullWidth required />
+            <TextField label="Password" name="password" type="password" value={credentials.password} onChange={handleChange} fullWidth required />
 
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Username"
-          name="username"
-          value={credentials.username}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-        <TextField
-          label="Password"
-          name="password"
-          type="password"
-          value={credentials.password}
-          onChange={handleChange}
-          fullWidth
-          margin="normal"
-          required
-        />
-
-        <Stack direction="row" spacing={2} sx={{ mt: 3, justifyContent: "flex-end" }}>
-          <Button type="submit" variant="contained" color="primary">
-            Login
-          </Button>
-        </Stack>
-      </form>
+            <Button type="submit" sx={{
+              mt:2,
+              width:"100%",
+              py:1.5,
+              fontWeight:"bold",
+              background:"linear-gradient(45deg,#42a5f5,#ff7043)",
+              color:"white",
+              "&:hover":{background:"linear-gradient(45deg,#ff7043,#42a5f5)"} 
+            }}>
+              Login
+            </Button>
+          </Stack>
+        </form>
+      </Box>
     </Box>
   );
 };
