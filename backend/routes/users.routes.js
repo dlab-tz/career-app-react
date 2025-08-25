@@ -1,13 +1,13 @@
 const { Router } = require('express');
 const usersController = require('../controllers/users.controller');
-const verifyToken = require("../middleware/auth"); // make sure this attaches req.user
+const verifyToken = require("../middleware/auth");
 const router = Router();
 
 // Routes
-router.get('/', verifyToken, requireAdmin, usersController.getAllUsers);   // admin only
-router.post('/', usersController.createUser);                             // open (or protect if needed)
-router.get('/:id', usersController.getUserById);                          // open (or protect if needed)
-router.put('/:id', verifyToken, requireAdmin, usersController.updateUser); // admin only
-router.delete('/:id', verifyToken, requireAdmin, usersController.deleteUser); // admin only
+router.get('/', verifyToken, usersController.getAllUsers);
+router.post('/', usersController.createUser);
+router.get('/:id', verifyToken, usersController.getUserById);
+router.put('/:id', verifyToken, usersController.updateUser);
+router.delete('/:id', verifyToken, usersController.deleteUser);
 
 module.exports = router;
