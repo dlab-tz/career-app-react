@@ -1,6 +1,7 @@
 // models/User.js
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require ('../config/sequelize.js');
+const { verifyEmail } = require('../controllers/users.controller.js');
 
 const User = sequelize.define('User', {
     firstName: {
@@ -23,10 +24,14 @@ const User = sequelize.define('User', {
       unique: true,
       validate: { isEmail: true },
     },
+    verifiedEmail: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     phone: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: { is: /^[\d+\-()\s]{7,20}$/i },
+      validate: { is: /^[\d+\-()\s]{10}$/i },
     },
     dateOfBirth: {
       type: DataTypes.DATEONLY,
