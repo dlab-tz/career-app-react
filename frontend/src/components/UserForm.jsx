@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
-import { Autocomplete, Checkbox,Grid, Box, Button, FormControl, InputLabel, MenuItem,
+import { useState } from 'react';
+import { Autocomplete, Checkbox, Box, Button, FormControl, InputLabel, MenuItem,
     Stack, Select, TextField, Typography,
     FormControlLabel,  } from '@mui/material';
 import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
+import { useEffect } from "react"; // call API 
+
+function App() {
+  useEffect(() => {
+    fetch("http://localhost:5000/api/test") // use your backend URL/port
+      .then(res => res.json())
+      .then(data => console.log("Response from backend:", data))
+      .catch(err => console.error(" Backend not connected:", err));
+  }, []);
+
+  return <h1>Check console for backend response</h1>;
+}
 
 const regions = [
   'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
@@ -52,7 +64,7 @@ const UserForm = () => {
   });
 
 const [isOversea, setIsOversea] = useState(false);
-const notToSelect = ["Tanzania"];
+// const notToSelect = ["Tanzania"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -67,7 +79,7 @@ const notToSelect = ["Tanzania"];
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.dateOfBirth || formData.dateOfBirth > new Date()) {
@@ -86,6 +98,37 @@ const notToSelect = ["Tanzania"];
     if (!formData.educationLevel) {
       alert('Please select your education level');
       return;
+    }
+
+    try{
+      const response = await fetch("http://localhost:3000/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), //send formData obbject
+      });
+
+
+      const data = await response.json();
+      alert(data.message); // show success from backend
+      console.log('Response from backend:', data);
+
+      // Clear form data after successful submission
+      setFormData({
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        dateOfBirth: null,
+        educationLevel: '',
+        region: '',
+        professionalField: '',
+        country: '',
+      });
+      setIsOversea(false); // reset checkbox
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Something went wrong. Please try again later.');
     }
     console.log('Submitted:', formData);
     // TODO: send formData to backend via API call
@@ -143,7 +186,7 @@ const notToSelect = ["Tanzania"];
                 value={formData.phone}
                 onChange={handleChange}
                 margin='normal'
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }}
+                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 10 }} // TODO: migrate to slotProps.htmlInput in future
                 required
                 type="tel"
                 placeholder="10 digits"
