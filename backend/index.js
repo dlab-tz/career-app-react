@@ -37,8 +37,8 @@ app.use('/api/users', usersRouter);
         console.log('Models synced');
 
 // Require the Routes API  
-// Create a Server and run it on the port 3000
-const server = app.listen(3000, () => {
+// Create a Server and run it on the port 5000
+const server = app.listen(5000, () => {
     const addr = server.address();
     if (addr) {
         const formattedHost = addr.address === '::' ? 'localhost' : addr.address;
