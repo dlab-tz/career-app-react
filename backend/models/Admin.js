@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   const Admin = sequelize.define('Admin', {
     name: {
@@ -18,15 +19,34 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Email is required' },
       },
     },
-    passwordHash: {
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        notEmpty: { msg: 'Password hash is required' },
+        notEmpty: { msg: 'Password is required' },
       },
     },
   }, {
     tableName: 'admins',
+    hooks: {
+      beforeCreate: async (admin) => {
+        if (admin.password) {
+          const salt = await bcrypt.genSalt(10);
+          admin.password = await bcrypt.hash(admin.password, salt);
+        }
+      },
+      beforeUpdate: async (admin) => {
+        if (admin.changed('password')) {
+          const salt = await bcrypt.genSalt(10);
+          admin.password = await bcrypt.hash(admin.password, salt);
+        }
+      }
+    }
   });
+
+  Admin.prototype.validatePassword = async function (inputPassword) {
+    return await bcrypt.compare(inputPassword, this.password);
+  };
+
   return Admin;
 };
