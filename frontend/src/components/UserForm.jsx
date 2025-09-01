@@ -6,18 +6,6 @@ import{LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
-import { useEffect } from "react"; // call API 
-
-function App() {
-  useEffect(() => {
-    fetch("http://localhost:5000/api/test") // use your backend URL/port
-      .then(res => res.json())
-      .then(data => console.log("Response from backend:", data))
-      .catch(err => console.error(" Backend not connected:", err));
-  }, []);
-
-  return <h1>Check console for backend response</h1>;
-}
 
 const regions = [
   'Arusha', 'Dar es Salaam', 'Dodoma', 'Geita', 'Iringa', 'Kagera', 'Katavi',
@@ -101,7 +89,7 @@ const [isOversea, setIsOversea] = useState(false);
     }
 
     try{
-      const response = await fetch("http://localhost:3000/api/users", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData), //send formData obbject
