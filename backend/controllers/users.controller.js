@@ -23,7 +23,7 @@ const getUserById = async (req, res) => {
 };
 
 // POST create user
-const createUser = async (req, res) => {
+/*const createUser = async (req, res) => {
   try {
     const newUser = await User.create(req.body);
     res.status(201).json(newUser);
@@ -31,7 +31,32 @@ const createUser = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+*/
+const createUser = async (req, res) => {
+  const { email, password, ...rest } = req.body;
 
+  try {
+    // Check if email already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(409).json({ error: 'This email is already registered.' });
+    }
+
+    // Create new user
+    const newUser = await User.create({ email, password, ...rest });
+    res.status(201).json(newUser);
+
+  } catch (err) {
+    if (err instanceof UniqueConstraintError) {
+      res.status(409).json({ error: 'Email must be unique.' });
+    } else if (err instanceof ValidationError) {
+      res.status(400).json({ error: err.errors.map(e => e.message) });
+    } else {
+      console.error('Unexpected error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+};
 // PUT update user
 const updateUser = async (req, res) => {
   try {
