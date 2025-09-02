@@ -29,7 +29,7 @@ const createUser = async (req, res) => {
     const newUser = await User.create(req.body);
 
     // Build verification link
-    const verificationLink = `https://localhost:3000/api/users/verify-email/${newUser.id}`;
+    const verificationLink = `https://localhost:5000/api/users/verify-email/${newUser.id}`;
 
     // Send verification email
     await transporter.sendMail({
