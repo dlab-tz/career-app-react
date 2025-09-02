@@ -5,6 +5,9 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+const cors = require('cors');  // import cors
+app.use(cors());               // allow cross-origin requests
+
 const bodyParser = require('body-parser');
 const sequelize = require('./config/sequelize');
 const User = require('./models/user'); //load model to ensure it is registered
@@ -16,6 +19,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', (req, res) => {
   res.send('Backend is up and running ');
 });
+
+app.get("/api/test", (req, res) => {
+  res.json({ message: "Backend is connected ✅" });
+});
+
 
 //get all users
 app.use('/api/users', usersRouter);
@@ -29,8 +37,8 @@ app.use('/api/users', usersRouter);
         console.log('Models synced');
 
 // Require the Routes API  
-// Create a Server and run it on the port 3000
-const server = app.listen(3000, () => {
+// Create a Server and run it on the port 5000
+const server = app.listen(5000, () => {
     const addr = server.address();
     if (addr) {
         const formattedHost = addr.address === '::' ? 'localhost' : addr.address;
