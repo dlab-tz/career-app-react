@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Autocomplete, Checkbox, Grid, Box, Button, FormControl, InputLabel, MenuItem,
+import { Autocomplete, Checkbox, Box, Button, FormControl, InputLabel, MenuItem,
     Stack, Select, TextField, Typography,
     FormControlLabel,  } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -98,7 +98,6 @@ const UserForm = () => {
 
  const [districtOptions, setDistrictOptions] = useState([]);
  const [isOversea, setIsOversea] = useState(false);
- const notToSelect = ["Tanzania"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +108,7 @@ const UserForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validations
@@ -129,9 +128,38 @@ const UserForm = () => {
       alert('Please select your education level');
       return;
     }
+    // send formData to backend API
+    try{
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), //send formData obbject
+      });
 
-    console.log('Submitted:', formData);
-    // TODO: send formData to backend API
+
+      const data = await response.json();
+      alert(data.message); // show success from backend
+      console.log('Response from backend:', data);
+
+      // Clear form data after successful submission
+      setFormData({
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        dateOfBirth: null,
+        educationLevel: '',
+        region: '',
+        district: '', 
+        professionalField: '',
+        country: '',
+      });
+      setIsOversea(false); // reset checkbox
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Something went wrong. Please try again later.');
+    }
   };
 
   const handleAdminLogin = () => {
