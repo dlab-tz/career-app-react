@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { Autocomplete, Checkbox, Grid, Box, Button, FormControl, InputLabel, MenuItem,
+import { Autocomplete, Checkbox, Box, Button, FormControl, InputLabel, MenuItem,
     Stack, Select, TextField, Typography,
     FormControlLabel,  } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -98,7 +98,6 @@ const UserForm = () => {
 
  const [districtOptions, setDistrictOptions] = useState([]);
  const [isOversea, setIsOversea] = useState(false);
- const notToSelect = ["Tanzania"];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
