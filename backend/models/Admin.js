@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+
 module.exports = (sequelize, DataTypes) => {
   const Admin = sequelize.define('Admin', {
     name: {
@@ -26,8 +27,14 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: { msg: 'Password is required' },
       },
     },
+    role: {
+      type: DataTypes.ENUM('admin', 'superadmin'),
+      allowNull: false,
+      defaultValue: 'admin',
+    },
   }, {
     tableName: 'admins',
+    timestamps: true,
     hooks: {
       beforeCreate: async (admin) => {
         if (admin.password) {
