@@ -11,7 +11,7 @@ app.use(cors());               // allow cross-origin requests
 const bodyParser = require('body-parser');
 const models = require('./models');
 const usersRouter = require('./routes/users.routes');
-
+const authRouter = require('./routes/auth.routes'); 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -20,7 +20,7 @@ app.get('/', (req, res) => {
 });
 
 
-//get all users
+app.use('/api/auth', authRouter);
 app.use('/api/users', usersRouter);
 
 (async() => {
