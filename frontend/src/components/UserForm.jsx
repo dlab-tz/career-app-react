@@ -108,7 +108,7 @@ const UserForm = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validations
@@ -128,9 +128,38 @@ const UserForm = () => {
       alert('Please select your education level');
       return;
     }
+    // send formData to backend API
+    try{
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData), //send formData obbject
+      });
 
-    console.log('Submitted:', formData);
-    // TODO: send formData to backend API
+
+      const data = await response.json();
+      alert(data.message); // show success from backend
+      console.log('Response from backend:', data);
+
+      // Clear form data after successful submission
+      setFormData({
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        dateOfBirth: null,
+        educationLevel: '',
+        region: '',
+        district: '', 
+        professionalField: '',
+        country: '',
+      });
+      setIsOversea(false); // reset checkbox
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Something went wrong. Please try again later.');
+    }
   };
 
   const handleAdminLogin = () => {
@@ -178,7 +207,22 @@ const UserForm = () => {
           margin="normal"
           required
         />
-
+ <FormControl fullWidth margin="normal">
+            <InputLabel id="Gender">Gender*</InputLabel>
+            <Select
+              labelId="Gender-label"
+              id="gender"
+              name="gender"
+              value={formData.genderfilled}
+              label="gender"
+              onChange={handleChange}
+              required
+            >
+            
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+            </Select>
+          </FormControl>
         <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <TextField
             label="Phone"
@@ -290,6 +334,7 @@ const UserForm = () => {
         <FormControl fullWidth margin="normal">
           <InputLabel id="professional-field-label">Professional Field</InputLabel>
           <Select
+            label="professional-field-label"
             labelId="professional-field-label"
             name="professionalField"
             value={formData.professionalField}
