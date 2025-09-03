@@ -207,7 +207,22 @@ const UserForm = () => {
           margin="normal"
           required
         />
-
+ <FormControl fullWidth margin="normal">
+            <InputLabel id="Gender">Gender*</InputLabel>
+            <Select
+              labelId="Gender-label"
+              id="gender"
+              name="gender"
+              value={formData.genderfilled}
+              label="gender"
+              onChange={handleChange}
+              required
+            >
+            
+              <MenuItem value="male">Male</MenuItem>
+              <MenuItem value="female">Female</MenuItem>
+            </Select>
+          </FormControl>
         <Stack direction="row" spacing={2} sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <TextField
             label="Phone"
