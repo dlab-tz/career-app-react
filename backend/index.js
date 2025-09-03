@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const sequelize = require('./config/sequelize');
 const User = require('./models/user'); //load model to ensure it is registered
 const usersRouter = require('./routes/users.routes');
-
+const authRouter = require('./routes/auth.routes'); 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
   res.send('Backend is up and running ');
 });
 
+app.use('/api/auth', authRouter);
 //get all users
 app.use('/api/users', usersRouter);
 
