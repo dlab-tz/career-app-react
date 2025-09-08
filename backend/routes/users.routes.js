@@ -6,8 +6,8 @@ const router = Router();
 // Routes
 router.get('/', verifyToken, usersController.getAllUsers);
 router.post('/', usersController.createUser);
-router.get('/:id', verifyToken, usersController.getUserById);
-router.put('/:id', verifyToken, usersController.updateUser);
-router.delete('/:id', verifyToken, usersController.deleteUser);
-
+router.get('/:id', usersController.getUserById);
+router.put('/:id', usersController.updateUser);
+router.delete('/:id', usersController.deleteUser);
+router.get('/verify-email/:userId', usersController.verifyEmail);
 module.exports = router;

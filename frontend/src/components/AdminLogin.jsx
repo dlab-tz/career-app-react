@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+const API_URL= process.env.REACT_APP_API_URL;
 const AdminLogin = () => {
   const [credentials, setCredentials] = useState({ username: "", password: "" });
   const navigate = useNavigate();
@@ -11,24 +12,37 @@ const AdminLogin = () => {
     setCredentials((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const { username, password } = credentials;
+  const { username, password } = credentials;
 
-    if (!username || !password) {
-      alert("Please enter both username and password");
-      return;
-    }
+  if (!username || !password) {
+    alert("Please enter both username and password");
+    return;
+  }
+  try {
+    // 🔹 Call backend login API
+    const res = await fetch(`${API_URL}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: username, password }),
+    });
 
-    // TODO: Replace with real admin authentication API
-    if (username === "admin" && password === "admin123") {
+    const data = await res.json();
+
+    if (res.ok) {
+      // 🔹 Save JWT token
+      localStorage.setItem("token", data.token);
       alert("Admin login successful!");
       navigate("/"); // Redirect to home/dashboard
     } else {
-      alert("Invalid credentials");
+      alert(data.msg || "Invalid credentials");
     }
-  };
+  } catch (err) {
+    alert("Server error: " + err.message);
+  }
+};
 
   return (
     <Box sx={{ maxWidth: "400px", margin: "auto", padding: 3, mt: 5 }}>

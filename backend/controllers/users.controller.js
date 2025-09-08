@@ -1,4 +1,5 @@
 const User = require ('../models/user');
+const transporter = require('../utils/mailer');
 
 //GET all users
 const getAllUsers = async (req, res)=> {
@@ -23,15 +24,55 @@ const getUserById = async (req, res) => {
 };
 
 // POST create user
-const createUser = async (req, res) => {
+/*const createUser = async (req, res) => {
   try {
     const newUser = await User.create(req.body);
-    res.status(201).json(newUser);
+
+    // Build verification link
+    const verificationLink = `https://localhost:5000/api/users/verify-email/${newUser.id}`;
+
+    // Send verification email
+    await transporter.sendMail({
+      to: newUser.email,
+      subject: 'Email Verification',
+      html: `<p><a href="${verificationLink}">Please verify your Email</a></p>`,
+    });
+
+    res.status(201).json({
+      message: 'User created. Verification email sent.',
+      user: newUser,
+    });
   } catch (err) {
+    console.error('User creation error:', err);
     res.status(400).json({ error: err.message });
   }
 };
+*/
+const createUser = async (req, res) => {
+  const { email, password, ...rest } = req.body;
 
+  try {
+    // Check if email already exists
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      return res.status(409).json({ error: 'This email is already registered.' });
+    }
+
+    // Create new user
+    const newUser = await User.create({ email, password, ...rest });
+    res.status(201).json(newUser);
+
+  } catch (err) {
+    if (err instanceof UniqueConstraintError) {
+      res.status(409).json({ error: 'Email must be unique.' });
+    } else if (err instanceof ValidationError) {
+      res.status(400).json({ error: err.errors.map(e => e.message) });
+    } else {
+      console.error('Unexpected error:', err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+};
 // PUT update user
 const updateUser = async (req, res) => {
   try {
@@ -57,6 +98,19 @@ const deleteUser = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const verifyEmail = async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findByPk(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    await user.update({ emailVerified: true });
+    res.json({ message: 'Email successfully verified' });
+  } catch (err) {
+    console.error('Email verification error:', err);
+    res.status(500).json({ error: 'Verification failed' });
+  }
+};
 
 module.exports = {
     getAllUsers,
@@ -64,4 +118,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    verifyEmail
 };
