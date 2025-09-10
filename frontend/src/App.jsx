@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UserForm from "./components/UserForm";
 import AdminLogin from "./components/AdminLogin";
+import ProtectedRoute from "./components/protectedRoute";
 function App() {
   return (
     <Router>
