@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 const API_URL= process.env.REACT_APP_API_URL;
 const AdminLogin = () => {
@@ -34,8 +35,19 @@ const handleSubmit = async (e) => {
     if (res.ok) {
       // 🔹 Save JWT token
       localStorage.setItem("token", data.token);
+      // 🔹 Decode JWT to get role
+      const decoded = jwtDecode(data.token);
+
+      if (decoded.role !=="admin"){
+        alert("Access denied: Not an admin");
+        localStorage.removeItem("token");
+        return;
+      }
+
+      localStorage.setItem("role",decoded.role);
+
       alert("Admin login successful!");
-      navigate("/"); // Redirect to home/dashboard
+      navigate("/admin"); // Redirect to admin dashboard
     } else {
       alert(data.msg || "Invalid credentials");
     }
